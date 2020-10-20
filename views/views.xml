@@ -1,0 +1,46 @@
+<odoo>
+    <record id="package_form" model="ir.ui.view">
+        <field name="name">Package Form</field>
+        <field name="model">abbybee.package</field>
+        <field name="arch" type="xml">
+            <form>
+              <field name="weight"/>
+            </form>
+        </field>
+    </record>
+
+    <record id="package_tree" model="ir.ui.view">
+        <field name="name">Package Tree</field>
+        <field name="model">abbybee.package</field>
+        <field name="arch" type="xml">
+            <tree>
+              <field name="weight"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="package_search" model="ir.ui.view">
+        <field name="name">Package Search</field>
+        <field name="model">abbybee.package</field>
+        <field name="arch" type="xml">
+            <search string="Search Package">
+                <field name="weight"/>
+           </search>
+        </field>
+    </record>
+
+
+     <record id="package_action" model="ir.actions.act_window">
+        <field name="name">Package</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">abbybee.package</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="abbybee_menu" name="Abby 🐝" sequence="200" action="package_action" web_icon="abbybee,static/abbybee.png" />
+
+    <menuitem id="package_menu" parent="abbybee_menu" name="Package" sequence="1" action="package_action" />
+
+
+</odoo>
