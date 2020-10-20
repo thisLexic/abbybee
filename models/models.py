@@ -6,4 +6,4 @@ class Package(models.Model):
     _description = 'Contains package data'
 
 
-    weight = fields.Float()
+    weight = fields.Float(required=True, string="Weight")
