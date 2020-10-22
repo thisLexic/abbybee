@@ -9,6 +9,7 @@
                     <group col="2" colspan="6"> 
                       <field name="weight"/>
                       <field name="control_no"/>
+                      <field name="date_sent"/>
                     </group>
                     <group col="2" colspan="6"> 
                       
@@ -24,6 +25,7 @@
         <field name="model">abbybee.package</field>
         <field name="arch" type="xml">
             <tree>
+                <field name="date_sent"/>
                 <field name="control_no"/>
             </tree>
         </field>

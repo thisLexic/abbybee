@@ -15,6 +15,7 @@ class Package(models.Model):
 
     control_no = fields.Char(required=True, string="Control Number")
     weight = fields.Float(required=True, string="Weight")
+    date_sent = fields.Date(required=True, string="Date Sent")
 
     @api.model
     def create(self, vals):
@@ -26,9 +27,18 @@ class Package(models.Model):
         return result
 
     def write(self, vals):
-        new_value = vals['control_no']
-        existing_records = self.env['abbybee.package'].search([('control_no', '=', new_value)])
-        if len(existing_records) >= 1:
-            raise ValidationError('Control Number value must be unique')
+        try:
+            new_value = vals['control_no']
+        except:
+            new_value = None
+
+        if self.control_no == new_value:
+            result = super(Package, self).write(vals)
+            return result
+
+        if new_value:
+            existing_records = self.env['abbybee.package'].search([('control_no', '=', new_value)])
+            if len(existing_records) >= 1:
+                raise ValidationError('Control Number value must be unique')
         result = super(Package, self).write(vals)
         return result
