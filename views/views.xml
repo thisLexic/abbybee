@@ -19,6 +19,7 @@
                     <group col="2" colspan="6" string="Receipt"> 
                       <field name="date_received" />
                       <field name="delivery_id" />
+                      <field name="recipient_id" />
                       <field name="recipient_signature" widget="image" />
                     </group>
                   </group>
@@ -69,16 +70,11 @@
         <field name="arch" type="xml">
             <form>
               <sheet>
-                  <group col="12">
-                    <group col="2" colspan="6"  string="Invoice"> 
+                  <group>
                       <field name="customer_id"/>
                       <field name="name"/>
                       <field name="address"/>
                       <field name="phone"/>
-                    </group>
-                    <group col="2" colspan="6" string="Receipt"> 
-                      
-                    </group>
                   </group>
               </sheet>
             </form>
@@ -218,6 +214,56 @@
     </record>
 
     <menuitem id="delivery_menu" parent="abbybee_menu" name="Delivery Staff" sequence="4" action="delivery_action" />
+
+<!-- RECIPIENT -->
+
+    <record id="recipient_form" model="ir.ui.view">
+        <field name="name">Recipient Form</field>
+        <field name="model">abbybee.recipient</field>
+        <field name="arch" type="xml">
+            <form>
+              <sheet>
+                <group> 
+                  <field name="recipient_id"/>
+                  <field name="name"/>
+                  <field name="address"/>
+                  <field name="phone"/>
+                </group>
+              </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="recipient_tree" model="ir.ui.view">
+        <field name="name">Recipient Tree</field>
+        <field name="model">abbybee.recipient</field>
+        <field name="arch" type="xml">
+            <tree>
+              <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="recipient_search" model="ir.ui.view">
+        <field name="name">Recipient Search</field>
+        <field name="model">abbybee.recipient</field>
+        <field name="arch" type="xml">
+            <search string="Search Recipient">
+                <field name="name"/>
+           </search>
+        </field>
+    </record>
+
+
+     <record id="recipient_action" model="ir.actions.act_window">
+        <field name="name">Recipient</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">abbybee.recipient</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="recipient_menu" parent="abbybee_menu" name="Recipient" sequence="5" action="recipient_action" />
 
 
 </odoo>

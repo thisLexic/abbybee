@@ -25,6 +25,7 @@ class Package(models.Model):
     date_received = fields.Date(string="Date Received")
     recipient_signature = fields.Binary(string="Recipient Signature")
     delivery_id = fields.Many2one('abbybee.delivery', string="Delivery Staff")
+    recipient_id = fields.Many2one('abbybee.recipient', string="Recipient")
 
     @api.model
     def create(self, vals):
@@ -36,11 +37,12 @@ class Package(models.Model):
         date_rec = vals['date_received']
         rec_sign = vals['recipient_signature']
         deli_id = vals['delivery_id']
+        rec_id = vals['recipient_id']
 
-        if date_rec and rec_sign and deli_id:
+        if date_rec and rec_sign and deli_id and rec_id:
             result = super(Package, self).create(vals)
             return result
-        elif not(date_rec) and not(rec_sign) and not(deli_id):
+        elif not(date_rec) and not(rec_sign) and not(deli_id) and not(rec_id):
             result = super(Package, self).create(vals)
             return result
         else:
@@ -65,16 +67,26 @@ class Package(models.Model):
         date_rec = 'date_received' in vals
         rec_sign = 'recipient_signature' in vals
         deli_id = 'delivery_id' in vals
+        rec_id = 'recipient_id' in vals
 
-        if date_rec != rec_sign:
-            raise ValidationError('If a field under Receipt has a value, all fields must have a value')
-        elif date_rec != deli_id:
-            raise ValidationError('If a field under Receipt has a value, all fields must have a value')
-        elif rec_sign != deli_id:
+        if rec_sign:
+            if vals['recipient_signature']:
+                pass
+            else:
+                rec_sign = False
+
+        # if date_rec != rec_sign or date_rec != deli_id or rec_sign != deli_id or rec_id != date_rec or rec_id != rec_sign or rec_id != deli_id:
+            # raise ValidationError('If a field under Receipt has a value, all fields must have a value')
+
+        if date_rec and rec_sign and deli_id and rec_id:
+            result = super(Package, self).write(vals)
+            return result
+        elif not(date_rec) and not(rec_sign) and not(deli_id) and not(rec_id):
+            result = super(Package, self).write(vals)
+            return result
+        else:
             raise ValidationError('If a field under Receipt has a value, all fields must have a value')
 
-        result = super(Package, self).write(vals)
-        return result
 
 
 class Customer(models.Model):
@@ -203,4 +215,46 @@ class Delivery(models.Model):
             if len(existing_records) >= 1:
                 raise ValidationError('Delivery Staff ID value must be unique')
         result = super(Delivery, self).write(vals)
+        return result
+
+class Recipient(models.Model):
+    _name = 'abbybee.recipient'
+    _description = 'Contains recipients'
+
+    def name_get(self):
+        result = []
+        for record in self:
+            result.append((record.id, record.name))
+        return result
+
+    recipient_id = fields.Char(required=True, string="Recipient ID")
+    name = fields.Char(required=True, string="Name")
+    address = fields.Char(required=True, string="Address")
+    phone = fields.Char(required=True, string="Phone")
+
+
+    @api.model
+    def create(self, vals):
+        new_value = vals['recipient_id']
+        existing_records = self.env['abbybee.recipient'].search([('recipient_id', '=', new_value)])
+        if len(existing_records) >= 1:
+            raise ValidationError('Recipient ID value must be unique')
+        result = super(Recipient, self).create(vals)
+        return result
+
+    def write(self, vals):
+        try:
+            new_value = vals['recipient_id']
+        except:
+            new_value = None
+
+        if self.recipient_id == new_value:
+            result = super(Recipient, self).write(vals)
+            return result
+
+        if new_value:
+            existing_records = self.env['abbybee.recipient'].search([('recipient_id', '=', new_value)])
+            if len(existing_records) >= 1:
+                raise ValidationError('Recipient ID value must be unique')
+        result = super(Recipient, self).write(vals)
         return result
