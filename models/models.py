@@ -81,17 +81,31 @@ class Package(models.Model):
             else:
                 rec_sign = False
 
-        # if date_rec != rec_sign or date_rec != deli_id or rec_sign != deli_id or rec_id != date_rec or rec_id != rec_sign or rec_id != deli_id:
-            # raise ValidationError('If a field under Receipt has a value, all fields must have a value')
+        # if self.date_received and self.delivery_id and self.recipient_id:
+        #     rec_id = True
+        #     deli_id = True
+        #     rec_sign = True
 
-        if date_rec and rec_sign and deli_id and rec_id:
-            result = super(Package, self).write(vals)
-            return result
-        elif not(date_rec) and not(rec_sign) and not(deli_id) and not(rec_id):
-            result = super(Package, self).write(vals)
-            return result
-        else:
+        if date_rec != rec_sign or date_rec != deli_id or rec_sign != deli_id or rec_id != date_rec or rec_id != rec_sign or rec_id != deli_id:
+            if self.date_received:
+                pass
+            else:
+                raise ValidationError('If a field under Receipt has a value, all fields must have a value')
+        
+        if self.date_received and not rec_sign:
             raise ValidationError('If a field under Receipt has a value, all fields must have a value')
+
+        result = super(Package, self).write(vals)
+        return result
+
+        # if date_rec and rec_sign and deli_id and rec_id:
+        #     result = super(Package, self).write(vals)
+        #     return result
+        # elif not(date_rec) and not(rec_sign) and not(deli_id) and not(rec_id):
+        #     result = super(Package, self).write(vals)
+        #     return result
+        # else:
+        #     raise ValidationError('If a field under Receipt has a value, all fields must have a value')
 
 
 
