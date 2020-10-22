@@ -33,8 +33,9 @@
         <field name="name">Package Tree</field>
         <field name="model">abbybee.package</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree default_order="date_received desc">
                 <field name="date_sent"/>
+                <field name="date_received"/>
                 <field name="control_no"/>
             </tree>
         </field>
