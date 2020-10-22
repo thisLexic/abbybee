@@ -14,6 +14,7 @@
                       <field name="control_no"/>
                       <field name="date_sent"/>
                       <field name="customer_id"/>
+                      <field name="service_id"/>
                     </group>
                     <group col="2" colspan="6" string="Receipt"> 
                       
@@ -112,6 +113,61 @@
     </record>
 
     <menuitem id="customer_menu" parent="abbybee_menu" name="Customer" sequence="1" action="customer_action" />
+
+<!-- SERVICE -->
+
+    <record id="service_form" model="ir.ui.view">
+        <field name="name">Service Form</field>
+        <field name="model">abbybee.service</field>
+        <field name="arch" type="xml">
+            <form>
+              <sheet>
+                <group> 
+                  <field name="service_id"/>
+                  <field name="delivery_time"/>
+                  <field name="service_type"/>
+                  <field name="package_type"/>
+                  <field name="destination_area"/>
+                  <field name="origin_area"/>
+                </group>
+              </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="service_tree" model="ir.ui.view">
+        <field name="name">Service Tree</field>
+        <field name="model">abbybee.service</field>
+        <field name="arch" type="xml">
+            <tree>
+              <field name="service_type"/>
+              <field name="package_type"/>
+              <field name="destination_area"/>
+              <field name="origin_area"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="service_search" model="ir.ui.view">
+        <field name="name">Service Search</field>
+        <field name="model">abbybee.service</field>
+        <field name="arch" type="xml">
+            <search string="Search Service">
+                <field name="package_type"/>
+           </search>
+        </field>
+    </record>
+
+
+     <record id="service_action" model="ir.actions.act_window">
+        <field name="name">Service</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">abbybee.service</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="service_menu" parent="abbybee_menu" name="Service" sequence="3" action="service_action" />
 
 
 </odoo>
