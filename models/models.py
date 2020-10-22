@@ -18,6 +18,8 @@ class Package(models.Model):
     date_sent = fields.Date(required=True, string="Date Sent")
     customer_id = fields.Many2one('abbybee.customer', required=True, string="Customer")
     service_id = fields.Many2one('abbybee.service', required=True, string="Service")
+    date_received = fields.Date(string="Date Received")
+    recipient_signature = fields.Binary(string="Recipient Signature")
 
     @api.model
     def create(self, vals):
@@ -25,8 +27,19 @@ class Package(models.Model):
         existing_records = self.env['abbybee.package'].search([('control_no', '=', new_value)])
         if len(existing_records) >= 1:
             raise ValidationError('Control Number value must be unique')
-        result = super(Package, self).create(vals)
-        return result
+
+        date_rec = vals['date_received']
+        rec_sign = vals['recipient_signature']
+
+        if date_rec and rec_sign:
+            result = super(Package, self).create(vals)
+            return result
+        elif not(date_rec) and not(rec_sign):
+            result = super(Package, self).create(vals)
+            return result
+        else:
+            raise ValidationError('If a field under Receipt has a value, all fields must have a value')
+
 
     def write(self, vals):
         try:
