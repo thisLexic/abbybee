@@ -1,3 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 
 access_abbybee_package,abbybee.package,model_abbybee_package,base.group_user,1,1,1,1
+access_abbybee_customer,abbybee.customer,model_abbybee_customer,base.group_user,1,1,1,1
