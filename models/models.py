@@ -81,7 +81,7 @@ class Customer(models.Model):
             return result
 
         if new_value:
-            existing_records = self.env['abbybee.customer'].search([('control_no', '=', new_value)])
+            existing_records = self.env['abbybee.customer'].search([('customer_id', '=', new_value)])
             if len(existing_records) >= 1:
                 raise ValidationError('Customer ID value must be unique')
         result = super(Customer, self).write(vals)
