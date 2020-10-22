@@ -6,10 +6,11 @@
             <form>
               <sheet>
                   <group col="12">
-                    <group col="4" colspan="6"> 
+                    <group col="2" colspan="6"> 
                       <field name="weight"/>
+                      <field name="control_no"/>
                     </group>
-                    <group col="4" colspan="6"> 
+                    <group col="2" colspan="6"> 
                       
                     </group>
                   </group>
@@ -23,7 +24,7 @@
         <field name="model">abbybee.package</field>
         <field name="arch" type="xml">
             <tree>
-              <field name="weight"/>
+                <field name="control_no"/>
             </tree>
         </field>
     </record>
