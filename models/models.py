@@ -24,6 +24,7 @@ class Package(models.Model):
     service_id = fields.Many2one('abbybee.service', required=True, string="Service")
     date_received = fields.Date(string="Date Received")
     recipient_signature = fields.Binary(string="Recipient Signature")
+    delivery_id = fields.Many2one('abbybee.delivery', string="Delivery Staff")
 
     @api.model
     def create(self, vals):
@@ -34,11 +35,12 @@ class Package(models.Model):
 
         date_rec = vals['date_received']
         rec_sign = vals['recipient_signature']
+        deli_id = vals['delivery_id']
 
-        if date_rec and rec_sign:
+        if date_rec and rec_sign and deli_id:
             result = super(Package, self).create(vals)
             return result
-        elif not(date_rec) and not(rec_sign):
+        elif not(date_rec) and not(rec_sign) and not(deli_id):
             result = super(Package, self).create(vals)
             return result
         else:
@@ -62,20 +64,15 @@ class Package(models.Model):
 
         date_rec = 'date_received' in vals
         rec_sign = 'recipient_signature' in vals
+        deli_id = 'delivery_id' in vals
 
-        _logger.exception(date_rec)
-        _logger.exception(rec_sign)
-        _logger.exception(self.date_received)
-        _logger.exception(self.recipient_signature)
-
-        # if date_rec and rec_sign:
-        #     result = super(Package, self).write(vals)
-        #     return result
-        # elif not(date_rec) and not(rec_sign):
-        #     result = super(Package, self).write(vals)
-        #     return result
         if date_rec != rec_sign:
             raise ValidationError('If a field under Receipt has a value, all fields must have a value')
+        elif date_rec != deli_id:
+            raise ValidationError('If a field under Receipt has a value, all fields must have a value')
+        elif rec_sign != deli_id:
+            raise ValidationError('If a field under Receipt has a value, all fields must have a value')
+
         result = super(Package, self).write(vals)
         return result
 
@@ -166,4 +163,44 @@ class Service(models.Model):
             if len(existing_records) >= 1:
                 raise ValidationError('Service ID value must be unique')
         result = super(Service, self).write(vals)
+        return result
+
+class Delivery(models.Model):
+    _name = 'abbybee.delivery'
+    _description = 'Contains delivery staff'
+
+    def name_get(self):
+        result = []
+        for record in self:
+            result.append((record.id, record.name))
+        return result
+
+    courier_id = fields.Char(required=True, string="Delivery Staff ID")
+    name = fields.Char(required=True, string="Name")
+
+
+    @api.model
+    def create(self, vals):
+        new_value = vals['courier_id']
+        existing_records = self.env['abbybee.delivery'].search([('courier_id', '=', new_value)])
+        if len(existing_records) >= 1:
+            raise ValidationError('Delivery Staff ID value must be unique')
+        result = super(Delivery, self).create(vals)
+        return result
+
+    def write(self, vals):
+        try:
+            new_value = vals['courier_id']
+        except:
+            new_value = None
+
+        if self.courier_id == new_value:
+            result = super(Delivery, self).write(vals)
+            return result
+
+        if new_value:
+            existing_records = self.env['abbybee.delivery'].search([('courier_id', '=', new_value)])
+            if len(existing_records) >= 1:
+                raise ValidationError('Delivery Staff ID value must be unique')
+        result = super(Delivery, self).write(vals)
         return result
