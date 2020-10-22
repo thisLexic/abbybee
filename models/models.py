@@ -16,6 +16,11 @@ class Package(models.Model):
             result.append((record.id, record.control_no))
         return result
 
+    @api.depends('weight')
+    def _get_cost(self):
+        for rec in self:
+            rec.cost = rec.weight * 5
+
 
     control_no = fields.Char(required=True, string="Control Number")
     weight = fields.Float(required=True, string="Weight")
@@ -26,6 +31,7 @@ class Package(models.Model):
     recipient_signature = fields.Binary(string="Recipient Signature")
     delivery_id = fields.Many2one('abbybee.delivery', string="Delivery Staff")
     recipient_id = fields.Many2one('abbybee.recipient', string="Recipient")
+    cost = fields.Float(compute='_get_cost', string="Cost")
 
     @api.model
     def create(self, vals):
