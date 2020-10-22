@@ -1,6 +1,10 @@
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 
+import logging
+
+_logger = logging.getLogger(__name__)
+
 
 class Package(models.Model):
     _name = 'abbybee.package'
@@ -55,6 +59,23 @@ class Package(models.Model):
             existing_records = self.env['abbybee.package'].search([('control_no', '=', new_value)])
             if len(existing_records) >= 1:
                 raise ValidationError('Control Number value must be unique')
+
+        date_rec = 'date_received' in vals
+        rec_sign = 'recipient_signature' in vals
+
+        _logger.exception(date_rec)
+        _logger.exception(rec_sign)
+        _logger.exception(self.date_received)
+        _logger.exception(self.recipient_signature)
+
+        # if date_rec and rec_sign:
+        #     result = super(Package, self).write(vals)
+        #     return result
+        # elif not(date_rec) and not(rec_sign):
+        #     result = super(Package, self).write(vals)
+        #     return result
+        if date_rec != rec_sign:
+            raise ValidationError('If a field under Receipt has a value, all fields must have a value')
         result = super(Package, self).write(vals)
         return result
 
